@@ -331,7 +331,7 @@ namespace
 
     // Task 1.8: Camera modes
     enum CameraMode { FREE, TRACKING, GROUND };
-    CameraMode camMode = FREE;
+    // CameraMode camMode = FREE;
 
 	// Task 1.8: Make lookAt view matrix
     inline Mat44f make_lookAt(Vec3f eye, Vec3f target, Vec3f up) noexcept {
@@ -588,29 +588,29 @@ namespace
         fonsDrawText(fontContext, textX, textY, button.label, nullptr);
     }
 
-    void drawButton(UIButton& button,
-        std::vector<float>& vertices,
-        FONScontext* fontContext) {
-        float red, green, blue, alpha;
-        if (button.pressed) {
-            red = 0.2f; green = 0.6f; blue = 0.9f; alpha = 0.8f;
-        }
-        else if (button.hovered) {
-            red = 0.2f; green = 0.6f; blue = 0.9f; alpha = 0.5f;
-        }
-        else {
-            red = 0.1f; green = 0.4f; blue = 0.7f; alpha = 0.4f;
-        }
+    //void drawButton(UIButton& button,
+    //    std::vector<float>& vertices,
+    //    FONScontext* fontContext) {
+    //    float red, green, blue, alpha;
+    //    if (button.pressed) {
+    //        red = 0.2f; green = 0.6f; blue = 0.9f; alpha = 0.8f;
+    //    }
+    //    else if (button.hovered) {
+    //        red = 0.2f; green = 0.6f; blue = 0.9f; alpha = 0.5f;
+    //    }
+    //    else {
+    //        red = 0.1f; green = 0.4f; blue = 0.7f; alpha = 0.4f;
+    //    }
 
-        // Filled rectangle
-        pushButtonQuad(vertices, button, red, green, blue, alpha);
+    //    // Filled rectangle
+    //    pushButtonQuad(vertices, button, red, green, blue, alpha);
 
-        // Solid outline (white)
-        pushButtonOutline(vertices, button, 1.0f, 1.0f, 1.0f, 1.0f);
+    //    // Solid outline (white)
+    //    pushButtonOutline(vertices, button, 1.0f, 1.0f, 1.0f, 1.0f);
 
-        // Centered label
-        drawButtonLabel(button, fontContext);
-    }
+    //    // Centered label
+    //    drawButtonLabel(button, fontContext);
+    //}
 
     //Task 1.11 Fontstash OpenGL Backend
     static int atlasWidth = 0;
@@ -1109,7 +1109,7 @@ int main() try
 
 	// Task 1.4: Landing pad setup
 	GLuint padVao = 0, padVbo = 0, padEbo = 0; // Landing pad VAO/VBO/EBO
-	GLsizei padIndexCount = 0; // Number of landing pad indices
+	//GLsizei padIndexCount = 0; // Number of landing pad indices
     // Simple untextured shader for landing pad
     ShaderProgram padShader({
         { GL_VERTEX_SHADER,   "assets/cw2/landingpad.vert" },
@@ -1161,7 +1161,7 @@ int main() try
             }
         }
 		// Store index count
-        padIndexCount = static_cast<GLsizei>(padIndices.size());
+        GLsizei padIndexCount = static_cast<GLsizei>(padIndices.size());
     }
 
 	// Task 1.4: Create landing pad VAO/VBO/EBO
@@ -1582,11 +1582,11 @@ int main() try
 
         // Compute proj/view once
         float aspect = fbwidth / fbheight;
-        Mat44f proj = make_perspective_projection(fovY, aspect, zNear, zFar);
+        // Mat44f proj = make_perspective_projection(fovY, aspect, zNear, zFar);
 
 		// View matrix from camera
-        Mat44f rotY = make_rotation_y(camera.yaw);
-        Mat44f rotX = make_rotation_x(camera.pitch);
+        //Mat44f rotY = make_rotation_y(camera.yaw);
+        //Mat44f rotX = make_rotation_x(camera.pitch);
         //Mat44f view = (rotX * rotY) * make_translation(Vec3f{ -camera.x, -camera.y, -camera.z });
         /*Mat44f view;*/
 
