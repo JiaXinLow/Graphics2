@@ -1,0 +1,25 @@
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.db
+*.idx
+*.ipch
+*.tlog
+
+# Build output
+bin/
+_build_/
+lib/
+
+# Compiled binaries
+*.exe
+*.pdb
+*.obj
+*.log
+*.lib
+
+# Misc
+*.vsidx

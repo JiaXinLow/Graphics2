@@ -1,4 +1,0 @@
-﻿  projection.cpp
-C:\Users\ryan lew\Documents\cw2\vmlib-test\projection.cpp(1,1): warning C4828: The file contains a character starting at offset 0xba9 that is illegal in the current source character set (codepage 65001).
-C:\Users\ryan lew\Documents\cw2\vmlib-test\projection.cpp(1,1): warning C4828: The file contains a character starting at offset 0xdfc that is illegal in the current source character set (codepage 65001).
-  vmlib-test.vcxproj -> C:\Users\ryan lew\Documents\cw2\bin\vmlib-test-debug-x64-msc-v143.exe
