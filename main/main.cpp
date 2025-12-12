@@ -23,7 +23,10 @@
 #include "../third_party/stb/include/stb_image.h" // added
 
 #define FONTSTASH_IMPLEMENTATION // added
-#include "../third_party/fontstash/include/fontstash.h" // added
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-function"   // Ignore unused function warnings
+#include "../third_party/fontstash/include/fontstash.h"
+#pragma GCC diagnostic pop
 
 #define STB_TRUETYPE_IMPLEMENTATION // added
 #define STBTT_STATIC // added
