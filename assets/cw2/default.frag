@@ -55,10 +55,9 @@ void main()
 {
     // Particle rendering path
     if (uIsParticle == 1) {
-        vec4 texColor = texture(uTexture, gl_PointCoord); // Sample particle texture
-        fragColor = texColor * vec4(1.0, 0.8, 0.6, 1.0); // Tint color
-        if (texColor.a < 0.1) discard; // Discard transparent pixels
-        fragColor = texColor; // Output texture color
+        vec4 texColor = texture(uTexture, gl_PointCoord);
+        if (texColor.a < 0.1) discard;
+        fragColor = texColor; // Discard transparent pixels
     }
 
     // Normal mesh path

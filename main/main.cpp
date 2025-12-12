@@ -22,8 +22,8 @@
 #define STB_IMAGE_IMPLEMENTATION // added
 #include "../third_party/stb/include/stb_image.h" // added
 
-#define FONTSTASH_IMPLEMENTATION
-#include "../third_party/fontstash/include/fontstash.h"
+#define FONTSTASH_IMPLEMENTATION // added
+#include "../third_party/fontstash/include/fontstash.h" // added
 
 #include "defaults.hpp"
 
@@ -376,7 +376,7 @@ namespace
 
 	// Task 1.8: Make ground camera view matrix
     inline Mat44f make_groundCameraView(Vec3f shipPos, Vec3f groundPos) noexcept {
-        Vec3f eye = groundPos + Vec3f{ 0.0f, 2.0f, -15.0f }; // Camera offset above/behind ground
+        Vec3f eye = groundPos + Vec3f{ -20.0f, 2.0f, -10.0f }; // Camera offset above/behind ground
         Vec3f target = shipPos; // Look at ship
         Vec3f up{ 0.0f, 1.0f, 0.0f };  // World up
 
@@ -433,11 +433,11 @@ namespace
 
     // Task 1.10 Exhaust emitter configuration
     Vec3f exhaustOffset = { 0.0f, -0.3f, 0.0f }; // local offset from shipModel
-    float spawnRate = 200.0f; // particles per second
+    float spawnRate = 100.0f; // particles per second
     float minLifetime = 0.5f; // seconds
     float maxLifetime = 1.0f; // seconds
-    float minSize = 10.0f; // pixels
-    float maxSize = 20.0f; // pixels
+    float minSize = 50.0f; // pixels
+    float maxSize = 100.0f; // pixels
     float exhaustSpeed = 5.0f; // average velocity (m/s)
 
     // Task 1.10 Utility: random float helper
@@ -517,7 +517,100 @@ namespace
         addVert(x, y + h);
     }
 
+    void pushButtonOutline(std::vector<float>& vertices,
+        const UIButton& button,
+        float red, float green, float blue, float alpha) {
+        float left = button.x;
+        float bottom = button.y;
+        float width = button.w;
+        float height = button.h;
+        float thickness = 2.0f; // outline thickness in pixels
+
+        auto addVertex = [&](float posX, float posY) {
+            vertices.push_back(posX);
+            vertices.push_back(posY);
+            vertices.push_back(red);
+            vertices.push_back(green);
+            vertices.push_back(blue);
+            vertices.push_back(alpha);
+            };
+
+        // Top edge
+        addVertex(left, bottom + height);
+        addVertex(left + width, bottom + height);
+        addVertex(left + width, bottom + height - thickness);
+        addVertex(left, bottom + height);
+        addVertex(left + width, bottom + height - thickness);
+        addVertex(left, bottom + height - thickness);
+
+        // Bottom edge
+        addVertex(left, bottom);
+        addVertex(left + width, bottom);
+        addVertex(left + width, bottom + thickness);
+        addVertex(left, bottom);
+        addVertex(left + width, bottom + thickness);
+        addVertex(left, bottom + thickness);
+
+        // Left edge
+        addVertex(left, bottom);
+        addVertex(left + thickness, bottom);
+        addVertex(left + thickness, bottom + height);
+        addVertex(left, bottom);
+        addVertex(left + thickness, bottom + height);
+        addVertex(left, bottom + height);
+
+        // Right edge
+        addVertex(left + width - thickness, bottom);
+        addVertex(left + width, bottom);
+        addVertex(left + width, bottom + height);
+        addVertex(left + width - thickness, bottom);
+        addVertex(left + width, bottom + height);
+        addVertex(left + width - thickness, bottom + height);
+    }
+
+    void drawButtonLabel(const UIButton& button, FONScontext* fontContext) {
+        fonsSetSize(fontContext, 18.0f);
+        fonsSetColor(fontContext, 0xFFFFFFFF); // white text
+
+        float bounds[4];
+        fonsTextBounds(fontContext, 0, 0, button.label, nullptr, bounds);
+        float textWidth = bounds[2] - bounds[0];
+        float textHeight = bounds[3] - bounds[1];
+
+        float textX = button.x + (button.w - textWidth) * 0.5f;
+        float textY = button.y + (button.h + textHeight) * 0.5f;
+
+        fonsDrawText(fontContext, textX, textY, button.label, nullptr);
+    }
+
+    void drawButton(UIButton& button,
+        std::vector<float>& vertices,
+        FONScontext* fontContext) {
+        float red, green, blue, alpha;
+        if (button.pressed) {
+            red = 0.2f; green = 0.6f; blue = 0.9f; alpha = 0.8f;
+        }
+        else if (button.hovered) {
+            red = 0.2f; green = 0.6f; blue = 0.9f; alpha = 0.5f;
+        }
+        else {
+            red = 0.1f; green = 0.4f; blue = 0.7f; alpha = 0.4f;
+        }
+
+        // Filled rectangle
+        pushButtonQuad(vertices, button, red, green, blue, alpha);
+
+        // Solid outline (white)
+        pushButtonOutline(vertices, button, 1.0f, 1.0f, 1.0f, 1.0f);
+
+        // Centered label
+        drawButtonLabel(button, fontContext);
+    }
+
     //Task 1.11 Fontstash OpenGL Backend
+    static int atlasWidth = 0;
+    static int atlasHeight = 0;
+
     // GL texture used for glyph atlas
     static GLuint fsTex = 0;
 
@@ -551,30 +644,30 @@ namespace
     {
         vec2 ndc;
         ndc.x = (aPos.x / uResolution.x) * 2.0 - 1.0;
-        ndc.y = (aPos.y / uResolution.y) * 2.0 - 1.0;
+        ndc.y = 1.0 - (aPos.y / uResolution.y) * 2.0;  
 
         gl_Position = vec4(ndc, 0.0, 1.0);
         vUV = aUV;
         vColor = aColor;
     }
-        )";
+    )";
 
-        static const char* fsFragSrc = R"(#version 430 core
+    static const char* fsFragSrc = R"(#version 430 core
     in vec2 vUV;
-    in vec4 vColor;
-
+    in vec4 vColor;       // text color from vertex
     uniform sampler2D uTex;
     out vec4 outColor;
 
-    void main()
-    {
-        float alpha = texture(uTex, vUV).r;
+    void main() {
+        float alpha = texture(uTex, vUV).r;   // sample red directly
         outColor = vec4(vColor.rgb, vColor.a * alpha);
     }
     )";
 
     int fsRenderCreate(void* userPtr, int width, int height)
     {
+        atlasWidth = width;
+        atlasHeight = height;
         // ---- Compile vertex shader ----
         GLuint vs = glCreateShader(GL_VERTEX_SHADER);
         glShaderSource(vs, 1, &fsVertSrc, nullptr);
@@ -584,6 +677,9 @@ namespace
         GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
         glShaderSource(fs, 1, &fsFragSrc, nullptr);
         glCompileShader(fs);
+
+        GLint status;
+        glGetShaderiv(vs, GL_COMPILE_STATUS, &status);
 
         // ---- Link program ----
         fsShader = glCreateProgram();
@@ -597,10 +693,18 @@ namespace
         // ---- Create atlas texture ----
         glGenTextures(1, &fsTex);
         glBindTexture(GL_TEXTURE_2D, fsTex);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width, height, 0,
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, width, height, 0,
             GL_RED, GL_UNSIGNED_BYTE, nullptr);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        // try
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+        // IMPORTANT: swizzle red channel into alpha
+        //GLint swizzleMask[] = { GL_ONE, GL_ONE, GL_ONE, GL_RED };
+        //glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask);
 
         // ---- Uniforms ----
         fsLocTexture = glGetUniformLocation(fsShader, "uTex");
@@ -629,35 +733,55 @@ namespace
         return 1;
     }
 
+
     //Update atlas size
     int fsRenderResize(void* up, int width, int height)
     {
+        atlasWidth = width;
+        atlasHeight = height;
         glBindTexture(GL_TEXTURE_2D, fsTex);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width, height, 0,
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, width, height, 0,
             GL_RED, GL_UNSIGNED_BYTE, nullptr);
 
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        // IMPORTANT: swizzle red channel into alpha
+        //GLint swizzleMask[] = { GL_ONE, GL_ONE, GL_ONE, GL_RED };
+        //glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask);
         return 1;
     }
 
     //update atlas region when new glyphs are baked
     void fsRenderUpdate(void* up, int* rect, const unsigned char* data)
     {
-        int x = rect[0], y = rect[1];
-        int w = rect[2] - rect[0];
-        int h = rect[3] - rect[1];
-
+        int x = rect[0];
+        int y = rect[1];
+        int w = rect[2];
+        int h = rect[3];
         glBindTexture(GL_TEXTURE_2D, fsTex);
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
         glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, w, h,
             GL_RED, GL_UNSIGNED_BYTE, data);
+
+        std::printf("Uploading glyph rect: %d %d %d %d\n", x, y, w, h);
+
     }
 
     //draw glyph quad batch
     void fsRenderDraw(void* up, const float* verts, const float* tcoords,
         const unsigned int* colors, int nverts)
     {
+        static bool once = false;
+        if (!once) {
+            std::print("Fontstash: fsRenderDraw called\n");
+            once = true;
+        }
+
         glUseProgram(fsShader);
-        glUniform2f(fsLocResolution, fsScreenW, fsScreenH);
+        GLint vp[4];
+        glGetIntegerv(GL_VIEWPORT, vp);
+        glUniform2f(fsLocResolution, float(vp[2]), float(vp[3]));
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, fsTex);
@@ -669,23 +793,24 @@ namespace
 
         for (int i = 0; i < nverts; ++i)
         {
-            float r = ((colors[i] >> 0) & 0xFF) / 255.0f;
-            float g = ((colors[i] >> 8) & 0xFF) / 255.0f;
-            float b = ((colors[i] >> 16) & 0xFF) / 255.0f;
             float a = ((colors[i] >> 24) & 0xFF) / 255.0f;
+            float b = ((colors[i] >> 16) & 0xFF) / 255.0f;
+            float g = ((colors[i] >> 8) & 0xFF) / 255.0f;
+            float r = ((colors[i] >> 0) & 0xFF) / 255.0f;
 
             buffer.push_back(verts[i * 2 + 0]);
             buffer.push_back(verts[i * 2 + 1]);
 
-            buffer.push_back(tcoords[i * 2 + 0]);
-            buffer.push_back(tcoords[i * 2 + 1]);
+            float u = tcoords[i * 2 + 0] / float(atlasWidth);
+            float v = tcoords[i * 2 + 1] / float(atlasHeight);
+            buffer.push_back(u);
+            buffer.push_back(v);
 
             buffer.push_back(r);
             buffer.push_back(g);
             buffer.push_back(b);
             buffer.push_back(a);
         }
-
         glBindVertexArray(fsVAO);
         glBindBuffer(GL_ARRAY_BUFFER, fsVBO);
 
@@ -699,7 +824,6 @@ namespace
             // Update existing buffer
             glBufferSubData(GL_ARRAY_BUFFER, 0, requiredSize, buffer.data());
         }
-
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -772,6 +896,10 @@ int main() try
     // Task 1.2: Cursor position callback, handles mouse look
     glfwSetCursorPosCallback(window,
         [](GLFWwindow* window, double xpos, double ypos) {
+            //Task 1.11 store info for UI
+            ui.mouseX = xpos;
+            ui.mouseY = ypos;
+            
             if (!mouseLookEnabled) return; // Ignore if mouse look disabled
             
             // Initialize on first movement
@@ -801,6 +929,17 @@ int main() try
                     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // Hide cursor
                 else
                     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL); // Show cursor
+            }
+            if (button == GLFW_MOUSE_BUTTON_LEFT) {
+                if (action == GLFW_PRESS) {
+                    ui.mouseLeftDown = true;
+                    ui.mouseLeftClicked = false;
+                }
+                else if (action == GLFW_RELEASE) {
+                    // click = release after being down
+                    ui.mouseLeftClicked = ui.mouseLeftDown;
+                    ui.mouseLeftDown = false;
+                }
             }
         }
     );
@@ -1187,15 +1326,15 @@ int main() try
 	glBufferData(GL_ARRAY_BUFFER, kMaxParticles * sizeof(ParticleGPU), nullptr, GL_DYNAMIC_DRAW); // Allocate buffer
 
     // Task 1.10: Load Exhaust Texture
-	GLuint exhaustTexture = 0; // Exhaust texture ID
-	glGenTextures(1, &exhaustTexture); // Generate texture
-	glBindTexture(GL_TEXTURE_2D, exhaustTexture); // Bind texture
+    GLuint exhaustTexture;
+    glGenTextures(1, &exhaustTexture);
+    glBindTexture(GL_TEXTURE_2D, exhaustTexture);
 
-	int exhW = 0, exhH = 0, exhC = 0; // Exhaust texture width, height, channels
-	stbi_set_flip_vertically_on_load(true); // Flip image vertically on load
+    int exhW = 0, exhH = 0, exhC = 0; // Exhaust texture width, height, channels
+    stbi_set_flip_vertically_on_load(true); // Flip image vertically on load
     // Request RGBA so we keep the alpha channel
     unsigned char* exhData = stbi_load("assets/cw2/exhaust.png", &exhW, &exhH, &exhC, STBI_rgb_alpha);
-	// Check if loading succeeded
+    // Check if loading succeeded
     if (!exhData) {
         throw std::runtime_error("Failed to load exhaust texture: " + std::string(stbi_failure_reason()));
     }
@@ -1204,7 +1343,8 @@ int main() try
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glGenerateMipmap(GL_TEXTURE_2D);
-    stbi_image_free(exhData); // Free image memory
+    stbi_image_free(exhData); // Free image memory 
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     // Task 1.10: Particle update function
     auto updateParticles = [&](float deltaTime, Mat44f const& shipModel) {
@@ -1228,7 +1368,7 @@ int main() try
 
                 p.vel = normalize(jitter) * exhaustSpeed; // Final velocity
 
-                p.size = randf(minSize, maxSize) / 100.0f; // Random size
+                p.size = randf(minSize, maxSize); // Random size
                 p.lifetime = randf(minLifetime, maxLifetime); // Random lifetime
                 p.age = 0.0f; // Reset age
             }
@@ -1261,8 +1401,8 @@ int main() try
 
     // ===== Task 1.11: UI shader and buffers =====
     ShaderProgram uiShader({
-        { GL_VERTEX_SHADER,   "assets/cw2/ui.vert" },
-        { GL_FRAGMENT_SHADER, "assets/cw2/ui.frag" }
+        { GL_VERTEX_SHADER,   "assets/cw2/Ui.vert" },
+        { GL_FRAGMENT_SHADER, "assets/cw2/Ui.frag" }
         });
     GLuint uiProgramId = uiShader.programId();
     GLint uiLocResolution = glGetUniformLocation(uiProgramId, "uResolution");
@@ -1282,16 +1422,11 @@ int main() try
 
     glBindVertexArray(0);
 
-    // ===== Task 1.11: Fontstash setup =====
+	// Task 1.11: Initialize font rendering
     FONSparams fsParams{};
-    fsParams.width = 1024;   // texture atlas size
+    fsParams.width = 1024;
     fsParams.height = 1024;
     fsParams.flags = FONS_ZERO_TOPLEFT;
-    // You must fill fsParams.renderCreate / renderResize / renderUpdate /
-    // renderDraw / renderDelete with your own GL backend (modern OpenGL).
-    // That backend should create a single GL texture for the atlas and
-    // draw the quads with alpha blending.
-
     fsParams.renderCreate = fsRenderCreate;
     fsParams.renderResize = fsRenderResize;
     fsParams.renderUpdate = fsRenderUpdate;
@@ -1299,10 +1434,8 @@ int main() try
     fsParams.renderDelete = fsRenderDelete;
 
     FONScontext* fs = fonsCreateInternal(&fsParams);
-    int font = fonsAddFont(fs, "mono", "assets/cw2/DroidSansMonoDotted.ttf");
-    if (font == FONS_INVALID) {
-        throw std::runtime_error("Failed to load DroidSansMonoDotted.ttf");
-    }
+    int font = fonsAddFont(fs, "sans", "assets/cw2/DroidSansMonoDotted.ttf");
+    if (font == FONS_INVALID) throw std::runtime_error("Font load failed");
 
 	// Task 1.12: Query objects for rendering time
     const int QUERY_BUFFER_SIZE = 5; // Allocate 5 query slots for start/end per view
@@ -1509,9 +1642,9 @@ int main() try
             glUniform1i(locDirEnabled, dirEnabled ? 1 : 0); // Directional toggle
 
             glUniformMatrix4fv(locModel, 1, GL_TRUE, kIdentity44f.v);
+            glUniform1i(locIsParticle, 0);
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, terrainTexture);
-            glUniform1i(locIsParticle, 0);
             glUniform1i(locTex, 0); 
             glBindVertexArray(terrainVao);
             glDrawElements(GL_TRIANGLES, terrainIndexCount, GL_UNSIGNED_INT, nullptr);
@@ -1679,16 +1812,16 @@ int main() try
 
             // Task 1.10: Particle rendering
             glUseProgram(terrainProgramId);
+            glUniform1i((locIsParticle), 1);
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, exhaustTexture);
-            glUniform1i(glGetUniformLocation(terrainProgramId, "uTexture"), 0);
-            glUniform1i(glGetUniformLocation(terrainProgramId, "uIsParticle"), 1);
+            glUniform1i(locTex, 0);
             glEnable(GL_BLEND);
-            glBlendFunc(GL_ONE, GL_ONE); // addictive blending
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE);// addictive blending
             glDepthMask(GL_FALSE);
             glBindVertexArray(particleVAO);
-            glDrawArrays(GL_TRIANGLE_STRIP, 0, aliveCount * 4);
-            glBindVertexArray(0);
+            glEnable(GL_PROGRAM_POINT_SIZE);
+            glDrawArrays(GL_POINTS, 0, aliveCount);
             glDepthMask(GL_TRUE);
             glDisable(GL_BLEND);
          };
@@ -1729,8 +1862,16 @@ int main() try
 				glQueryCounter(fullFrameEndQuery[queryIndex], GL_TIMESTAMP); // Task 1.12: End full frame timing query (GPU)
             }
 
+            // RESET VIEWPORT FOR UI & TEXT
+            glViewport(0, 0, nwidth, nheight);
+
+            GLint vp[4];
+            glGetIntegerv(GL_VIEWPORT, vp);
+            float vpW = float(vp[2]);
+            float vpH = float(vp[3]);
+
             // ===== Task 1.11: UI update & render =====
-       // 1) Update button interaction state
+            // 1) Update button interaction state
             updateButton(launchButton);
             updateButton(resetButton);
 
@@ -1799,22 +1940,31 @@ int main() try
                 ui.mouseLeftClicked = false; // consume
             }
 
-            // Re-enable depth test for next frame’s 3D
-            glEnable(GL_DEPTH_TEST);
+            // ===== Task 1.11: Altitude text (top-left) =====
+       // IMPORTANT: reset viewport for UI/text
 
-            //Task 1.11: Altitude text (top-left)
-            float altitude = shipPos.y - waterLevel;
+            // Prepare GL state for text
+            glDisable(GL_DEPTH_TEST);
+            glDepthMask(GL_FALSE);
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
-            char altText[64];
-            std::snprintf(altText, sizeof(altText), "Altitude: %.1f m", altitude);
+            // Draw test text
+            char altitudeBuffer[64];
+            snprintf(altitudeBuffer, sizeof(altitudeBuffer), "Altitude: %.1f m", shipPos.y);
 
-            fonsSetSize(fs, 24.0f);
             fonsSetFont(fs, font);
-            fonsSetColor(fs, 0xFFFFFFFF); // white
+            fonsSetSize(fs, 50.0f);
+            fonsSetColor(fs, 0xFF00FFFF); // bright magenta
             fonsSetAlign(fs, FONS_ALIGN_LEFT | FONS_ALIGN_TOP);
 
-            // Fontstash uses origin top-left with FONS_ZERO_TOPLEFT flag
-            fonsDrawText(fs, 20.0f, 20.0f, altText, nullptr);
+            //fonsDrawText(fs, 20.0f, 20.0f, "HELLO", nullptr);
+            fonsDrawText(fs, 10.0f, 10.0f, altitudeBuffer, nullptr);
+
+            // Restore GL state
+            glDisable(GL_BLEND);
+            glDepthMask(GL_TRUE);
+            glEnable(GL_DEPTH_TEST);
 
 			// Task 1.12: Retrieve and print terrain rendering time
             int retrieveIndex = (queryIndex + QUERY_BUFFER_SIZE - 2) % QUERY_BUFFER_SIZE;

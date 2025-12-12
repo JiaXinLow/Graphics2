@@ -19,6 +19,7 @@ uniform mat4 uProj; // Projection transform
 
 // Particle-specific uniform
 uniform int uIsParticle; // 1 = particle, 0 = normal mesh
+uniform sampler2D uTexture;
 
 void main()
 {
