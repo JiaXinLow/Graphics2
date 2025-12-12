@@ -1,0 +1,134 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Jia Xin\\Downloads\\computer_graphics_cw2\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{6A7F9A7C-56B6-9B0D-FFA2-8110EBB8170F}|main\\main.vcxproj|C:\\Users\\Jia Xin\\Downloads\\computer_graphics_cw2\\main\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{6A7F9A7C-56B6-9B0D-FFA2-8110EBB8170F}|main\\main.vcxproj|solutionrelative:main\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Jia Xin\\Downloads\\computer_graphics_cw2\\assets\\cw2\\Ui.frag||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:assets\\cw2\\Ui.frag||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Jia Xin\\Downloads\\computer_graphics_cw2\\assets\\cw2\\Ui.vert||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:assets\\cw2\\Ui.vert||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3FEA9310-ABFE-BBC1-7480-5F21E053B8F2}|vmlib\\vmlib.vcxproj|C:\\Users\\Jia Xin\\Downloads\\computer_graphics_cw2\\vmlib\\mat44.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{3FEA9310-ABFE-BBC1-7480-5F21E053B8F2}|vmlib\\vmlib.vcxproj|solutionrelative:vmlib\\mat44.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A15CD883-8DBF-6728-3645-A0DE228733AB}|assets\\cw2\\main-shaders.vcxproj|C:\\Users\\Jia Xin\\Downloads\\computer_graphics_cw2\\assets\\cw2\\default.frag||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A15CD883-8DBF-6728-3645-A0DE228733AB}|assets\\cw2\\main-shaders.vcxproj|solutionrelative:assets\\cw2\\default.frag||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A15CD883-8DBF-6728-3645-A0DE228733AB}|assets\\cw2\\main-shaders.vcxproj|C:\\Users\\Jia Xin\\Downloads\\computer_graphics_cw2\\assets\\cw2\\default.vert||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A15CD883-8DBF-6728-3645-A0DE228733AB}|assets\\cw2\\main-shaders.vcxproj|solutionrelative:assets\\cw2\\default.vert||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E2833EB1-4E63-BD4C-577B-4823C3D923AE}|support\\support.vcxproj|C:\\Users\\Jia Xin\\Downloads\\computer_graphics_cw2\\support\\program.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{E2833EB1-4E63-BD4C-577B-4823C3D923AE}|support\\support.vcxproj|solutionrelative:support\\program.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "main.cpp",
+              "DocumentMoniker": "C:\\Users\\Jia Xin\\Downloads\\computer_graphics_cw2\\main\\main.cpp",
+              "RelativeDocumentMoniker": "main\\main.cpp",
+              "ToolTip": "C:\\Users\\Jia Xin\\Downloads\\computer_graphics_cw2\\main\\main.cpp",
+              "RelativeToolTip": "main\\main.cpp",
+              "ViewState": "AgIAACIDAAAAAAAAAAAYwFADAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-11-30T23:46:01.999Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Ui.frag",
+              "DocumentMoniker": "C:\\Users\\Jia Xin\\Downloads\\computer_graphics_cw2\\assets\\cw2\\Ui.frag",
+              "RelativeDocumentMoniker": "assets\\cw2\\Ui.frag",
+              "ToolTip": "C:\\Users\\Jia Xin\\Downloads\\computer_graphics_cw2\\assets\\cw2\\Ui.frag",
+              "RelativeToolTip": "assets\\cw2\\Ui.frag",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-12-12T00:07:42.163Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Ui.vert",
+              "DocumentMoniker": "C:\\Users\\Jia Xin\\Downloads\\computer_graphics_cw2\\assets\\cw2\\Ui.vert",
+              "RelativeDocumentMoniker": "assets\\cw2\\Ui.vert",
+              "ToolTip": "C:\\Users\\Jia Xin\\Downloads\\computer_graphics_cw2\\assets\\cw2\\Ui.vert",
+              "RelativeToolTip": "assets\\cw2\\Ui.vert",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-12-12T00:07:01.608Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "mat44.hpp",
+              "DocumentMoniker": "C:\\Users\\Jia Xin\\Downloads\\computer_graphics_cw2\\vmlib\\mat44.hpp",
+              "RelativeDocumentMoniker": "vmlib\\mat44.hpp",
+              "ToolTip": "C:\\Users\\Jia Xin\\Downloads\\computer_graphics_cw2\\vmlib\\mat44.hpp",
+              "RelativeToolTip": "vmlib\\mat44.hpp",
+              "ViewState": "AgIAAGUAAAAAAAAAAAAYwHIAAAALAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-12-11T01:13:25.477Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "default.frag",
+              "DocumentMoniker": "C:\\Users\\Jia Xin\\Downloads\\computer_graphics_cw2\\assets\\cw2\\default.frag",
+              "RelativeDocumentMoniker": "assets\\cw2\\default.frag",
+              "ToolTip": "C:\\Users\\Jia Xin\\Downloads\\computer_graphics_cw2\\assets\\cw2\\default.frag",
+              "RelativeToolTip": "assets\\cw2\\default.frag",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAAwAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-12-01T22:45:37.678Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "default.vert",
+              "DocumentMoniker": "C:\\Users\\Jia Xin\\Downloads\\computer_graphics_cw2\\assets\\cw2\\default.vert",
+              "RelativeDocumentMoniker": "assets\\cw2\\default.vert",
+              "ToolTip": "C:\\Users\\Jia Xin\\Downloads\\computer_graphics_cw2\\assets\\cw2\\default.vert",
+              "RelativeToolTip": "assets\\cw2\\default.vert",
+              "ViewState": "AgIAABUAAAAAAAAAAAAmwCIAAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-12-01T22:44:42.291Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "program.hpp",
+              "DocumentMoniker": "C:\\Users\\Jia Xin\\Downloads\\computer_graphics_cw2\\support\\program.hpp",
+              "RelativeDocumentMoniker": "support\\program.hpp",
+              "ToolTip": "C:\\Users\\Jia Xin\\Downloads\\computer_graphics_cw2\\support\\program.hpp",
+              "RelativeToolTip": "support\\program.hpp",
+              "ViewState": "AgIAABMAAAAAAAAAAAAqwCAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-12-01T01:27:31.181Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
