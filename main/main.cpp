@@ -1,4 +1,4 @@
-﻿#include <glad/glad.h>
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include <print>
@@ -107,7 +107,7 @@ namespace
 
         // Top face (triangle fan)
         Vec3f nTop{ 0,1,0 }; // Upward normal
-        unsigned baseTop = verts.size();
+        unsigned baseTop = static_cast<unsigned int>(verts.size());
         for (int i = 0; i < 6; ++i)
             verts.push_back({ top[i].x, top[i].y, top[i].z, nTop.x, nTop.y, nTop.z, 0,0 });
         for (int i = 1; i < 5; ++i) { // Triangulate top hexagon
@@ -118,7 +118,7 @@ namespace
 
         // Bottom face (triangle fan)
         Vec3f nBottom{ 0,-1,0 }; // Downward normal
-        unsigned baseBottom = verts.size();
+        unsigned baseBottom = static_cast<unsigned int>(verts.size());
         for (int i = 0; i < 6; ++i)
             verts.push_back({ bottom[i].x, bottom[i].y, bottom[i].z, nBottom.x, nBottom.y, nBottom.z, 0,0 });
         for (int i = 1; i < 5; ++i) { // Triangulate bottom hexagon
@@ -133,7 +133,7 @@ namespace
             Vec3f a = top[i], b = top[j], c = bottom[j];
             Vec3f normal = normalize(cross(b - a, c - a)); // Compute face normal
 
-            unsigned baseSide = verts.size();
+            unsigned baseSide = static_cast<unsigned int>(verts.size());
             verts.push_back({ a.x,a.y,a.z, normal.x,normal.y,normal.z, 0,0 }); // Top-left
             verts.push_back({ b.x,b.y,b.z, normal.x,normal.y,normal.z, 0,0 }); // Top-right
             verts.push_back({ c.x,c.y,c.z, normal.x,normal.y,normal.z, 0,0 }); // Bottom-right
@@ -157,7 +157,7 @@ namespace
 
         // Base face (single quad split into two triangles)
         Vec3f nBase{ 0,-1,0 }; // Downward normal
-        unsigned b = verts.size();
+        unsigned b = static_cast<unsigned int>(verts.size());
         for (auto& p : base)
             verts.push_back({ p.x,p.y,p.z,nBase.x,nBase.y,nBase.z,0,0 });
         idx.insert(idx.end(), { b,b + 2,b + 1, b,b + 3,b + 2 }); // Two triangles for base
@@ -168,7 +168,7 @@ namespace
             Vec3f a = base[i], b2 = base[j];
             Vec3f normal = normalize(cross(b2 - a, apex - a)); // Face normal
              
-            unsigned s = verts.size();
+            unsigned s = static_cast<unsigned int>(verts.size());
             verts.push_back({ a.x,a.y,a.z,normal.x,normal.y,normal.z,0,0 }); // Base corner
             verts.push_back({ b2.x,b2.y,b2.z,normal.x,normal.y,normal.z,0,0 }); // Next corner
             verts.push_back({ apex.x,apex.y,apex.z,normal.x,normal.y,normal.z,0,0 }); // Apex
@@ -200,7 +200,7 @@ namespace
 
         // Build faces
         for (int f = 0; f < 6; ++f) {
-            unsigned b = verts.size(); // Base index for this face
+            unsigned b = static_cast<unsigned int>(verts.size()); // Base index for this face
             Vec3f n = normalize(norms[f]); // Normal for current face
             // Add 4 vertices of the face with same normal
             for (int k = 0; k < 4; ++k) {
@@ -221,7 +221,7 @@ namespace
         float hh = height * 0.5f; // Half height
 
         // Top circle
-        unsigned topStart = verts.size(); // Starting index for top vertices
+        unsigned topStart = static_cast<unsigned int>(verts.size());  // Starting index for top vertices
         for (int i = 0; i < segments; ++i) {
             float ang = i * (2.0f * std::numbers::pi_v<float> / segments); // Angle step
             float x = radius * std::cos(ang);
@@ -234,7 +234,7 @@ namespace
         }
 
         // Bottom circle
-        unsigned botStart = verts.size(); // Starting index for bottom vertices
+        unsigned botStart = static_cast<unsigned int>(verts.size());// Starting index for bottom vertices
         for (int i = 0; i < segments; ++i) {
             float ang = i * (2.0f * std::numbers::pi_v<float> / segments);
             float x = radius * std::cos(ang);
@@ -262,7 +262,7 @@ namespace
 
             Vec3f normal = normalize(cross(b - a, c - a)); // Compute side face normal
 
-            unsigned s = verts.size(); // Base index for side quad
+            unsigned s = static_cast<unsigned int>(verts.size()); // Base index for side quad
             verts.push_back({ a.x,a.y,a.z,normal.x,normal.y,normal.z,0,0 }); // Top-left
             verts.push_back({ b.x,b.y,b.z,normal.x,normal.y,normal.z,0,0 }); // Top-right
             verts.push_back({ c.x,c.y,c.z,normal.x,normal.y,normal.z,0,0 }); // Bottom-right
@@ -362,22 +362,22 @@ namespace
     }
 
 	// Task 1.8: Make tracking camera view matrix
-    inline Mat44f make_trackingCameraView(Vec3f shipPos, Vec3f travelDir) noexcept {
+    inline Mat44f make_trackingCameraView(Vec3f shipPosition, Vec3f travelDir) noexcept {
         Vec3f dir = (length(travelDir) > 0.001f) ? normalize(travelDir) : Vec3f{ 0.0f, 0.0f, 1.0f };
         Vec3f offsetBehind = dir * 10.0f; // Camera 10 units behind ship
         Vec3f offsetAbove = { 0.0f, 5.0f, 0.0f }; // Camera 5 units above
 
-        Vec3f eye = shipPos + offsetBehind + offsetAbove; // Camera position
-        Vec3f target = shipPos; // Look at ship
+        Vec3f eye = shipPosition + offsetBehind + offsetAbove; // Camera position
+        Vec3f target = shipPosition; // Look at ship
         Vec3f up{ 0.0f, 1.0f, 0.0f }; // World up
 
         return make_lookAt(eye, target, up); // Build view matrix
     }
 
 	// Task 1.8: Make ground camera view matrix
-    inline Mat44f make_groundCameraView(Vec3f shipPos, Vec3f groundPos) noexcept {
+    inline Mat44f make_groundCameraView(Vec3f shipPosition, Vec3f groundPos) noexcept {
         Vec3f eye = groundPos + Vec3f{ -20.0f, 2.0f, -10.0f }; // Camera offset above/behind ground
-        Vec3f target = shipPos; // Look at ship
+        Vec3f target = shipPosition; // Look at ship
         Vec3f up{ 0.0f, 1.0f, 0.0f };  // World up
 
         // Build view matrix
@@ -465,6 +465,11 @@ namespace
 
         bool hovered = false;
         bool pressed = false;
+
+        UIButton()
+            : x(0.0f), y(0.0f), w(0.0f), h(0.0f), label("") // explicitly initialize all members
+        {
+        }
 
         // convenience helper: hit test
         bool hit(float mx, float my) const {
@@ -666,6 +671,7 @@ namespace
 
     int fsRenderCreate(void* userPtr, int width, int height)
     {
+        (void)userPtr;
         atlasWidth = width;
         atlasHeight = height;
         // ---- Compile vertex shader ----
@@ -737,6 +743,7 @@ namespace
     //Update atlas size
     int fsRenderResize(void* up, int width, int height)
     {
+        (void)up;
         atlasWidth = width;
         atlasHeight = height;
         glBindTexture(GL_TEXTURE_2D, fsTex);
@@ -755,6 +762,7 @@ namespace
     //update atlas region when new glyphs are baked
     void fsRenderUpdate(void* up, int* rect, const unsigned char* data)
     {
+        (void)up;
         int x = rect[0];
         int y = rect[1];
         int w = rect[2];
@@ -772,6 +780,7 @@ namespace
     void fsRenderDraw(void* up, const float* verts, const float* tcoords,
         const unsigned int* colors, int nverts)
     {
+        (void)up;
         static bool once = false;
         if (!once) {
             std::print("Fontstash: fsRenderDraw called\n");
@@ -837,6 +846,7 @@ namespace
     //cleanup
     void fsRenderDelete(void* up)
     {
+        (void)up;
         glDeleteTextures(1, &fsTex);
         glDeleteBuffers(1, &fsVBO);
         glDeleteVertexArrays(1, &fsVAO);
@@ -896,6 +906,7 @@ int main() try
     // Task 1.2: Cursor position callback, handles mouse look
     glfwSetCursorPosCallback(window,
         [](GLFWwindow* window, double xpos, double ypos) {
+            (void)window;
             //Task 1.11 store info for UI
             ui.mouseX = xpos;
             ui.mouseY = ypos;
@@ -922,6 +933,7 @@ int main() try
 	// Task 1.2: Mouse button callback, toggles mouse look on right-click
     glfwSetMouseButtonCallback(window,
         [](GLFWwindow* window, int button, int action, int mods) {
+            (void)mods;
             if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
                 mouseLookEnabled = !mouseLookEnabled; // Toggle mouse look
                 firstMouse = true; // Reset first mouse flag
@@ -1052,7 +1064,7 @@ int main() try
 
 				// Add vertex and index
                 vertices.push_back(v);
-                indices.push_back(indices.size());
+                indices.push_back(static_cast<unsigned int>(indices.size()));
             }
         }
 		// Store index count
@@ -1347,7 +1359,7 @@ int main() try
     glBindTexture(GL_TEXTURE_2D, 0);
 
     // Task 1.10: Particle update function
-    auto updateParticles = [&](float deltaTime, Mat44f const& shipModel) {
+    auto updateParticles = [&](float deltaTime, Mat44f const& shipModels) {
         // Spawn new particles only if animation is running
         if (animRunning && !animPaused) {
             spawnAccumulator += spawnRate * deltaTime; // Accumulate spawn quota
@@ -1358,7 +1370,7 @@ int main() try
                 if (aliveCount >= kMaxParticles) break; // Cap particle count
 
                 Vec4f local(exhaustOffset.x, exhaustOffset.y, exhaustOffset.z, 1.0f); // Local exhaust pos
-                Vec4f world = shipModel * local; // Transform to world space
+                Vec4f world = shipModels * local; // Transform to world space
 
                 Particle& p = particles[aliveCount++]; // Allocate new particle
                 p.pos = { world.x, world.y, world.z }; // Set position
@@ -1576,7 +1588,7 @@ int main() try
         Mat44f rotY = make_rotation_y(camera.yaw);
         Mat44f rotX = make_rotation_x(camera.pitch);
         //Mat44f view = (rotX * rotY) * make_translation(Vec3f{ -camera.x, -camera.y, -camera.z });
-        Mat44f view;
+        /*Mat44f view;*/
 
         // Camera lookAt matrix
         Vec3f lightDir{ 0.0f, 1.0f, -1.0f };
@@ -1789,7 +1801,7 @@ int main() try
             }
 
             // Task 1.5: Prism sits directly above cube
-            float cubeSize = 0.5f;   // cube edge length
+            //float cubeSize = 0.5f;   // cube edge length
             float prismHeight = 1.0f;   // hex prism height
             Mat44f modelPrism = modelCub
                 * make_translation(Vec3f{ 0.0f, cubeSize * 0.4f + prismHeight * 0.5f, 0.0f })
@@ -1867,8 +1879,8 @@ int main() try
 
             GLint vp[4];
             glGetIntegerv(GL_VIEWPORT, vp);
-            float vpW = float(vp[2]);
-            float vpH = float(vp[3]);
+            //float vpW = float(vp[2]);
+            //float vpH = float(vp[3]);
 
             // ===== Task 1.11: UI update & render =====
             // 1) Update button interaction state
