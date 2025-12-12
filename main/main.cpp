@@ -25,6 +25,9 @@
 #define FONTSTASH_IMPLEMENTATION // added
 #include "../third_party/fontstash/include/fontstash.h" // added
 
+#define STB_TRUETYPE_IMPLEMENTATION // added
+#define STBTT_STATIC // added
+
 #include "defaults.hpp"
 
 namespace
@@ -522,71 +525,71 @@ namespace
         addVert(x, y + h);
     }
 
-    void pushButtonOutline(std::vector<float>& vertices,
-        const UIButton& button,
-        float red, float green, float blue, float alpha) {
-        float left = button.x;
-        float bottom = button.y;
-        float width = button.w;
-        float height = button.h;
-        float thickness = 2.0f; // outline thickness in pixels
+    //void pushButtonOutline(std::vector<float>& vertices,
+    //    const UIButton& button,
+    //    float red, float green, float blue, float alpha) {
+    //    float left = button.x;
+    //    float bottom = button.y;
+    //    float width = button.w;
+    //    float height = button.h;
+    //    float thickness = 2.0f; // outline thickness in pixels
 
-        auto addVertex = [&](float posX, float posY) {
-            vertices.push_back(posX);
-            vertices.push_back(posY);
-            vertices.push_back(red);
-            vertices.push_back(green);
-            vertices.push_back(blue);
-            vertices.push_back(alpha);
-            };
+    //    auto addVertex = [&](float posX, float posY) {
+    //        vertices.push_back(posX);
+    //        vertices.push_back(posY);
+    //        vertices.push_back(red);
+    //        vertices.push_back(green);
+    //        vertices.push_back(blue);
+    //        vertices.push_back(alpha);
+    //        };
 
-        // Top edge
-        addVertex(left, bottom + height);
-        addVertex(left + width, bottom + height);
-        addVertex(left + width, bottom + height - thickness);
-        addVertex(left, bottom + height);
-        addVertex(left + width, bottom + height - thickness);
-        addVertex(left, bottom + height - thickness);
+    //    // Top edge
+    //    addVertex(left, bottom + height);
+    //    addVertex(left + width, bottom + height);
+    //    addVertex(left + width, bottom + height - thickness);
+    //    addVertex(left, bottom + height);
+    //    addVertex(left + width, bottom + height - thickness);
+    //    addVertex(left, bottom + height - thickness);
 
-        // Bottom edge
-        addVertex(left, bottom);
-        addVertex(left + width, bottom);
-        addVertex(left + width, bottom + thickness);
-        addVertex(left, bottom);
-        addVertex(left + width, bottom + thickness);
-        addVertex(left, bottom + thickness);
+    //    // Bottom edge
+    //    addVertex(left, bottom);
+    //    addVertex(left + width, bottom);
+    //    addVertex(left + width, bottom + thickness);
+    //    addVertex(left, bottom);
+    //    addVertex(left + width, bottom + thickness);
+    //    addVertex(left, bottom + thickness);
 
-        // Left edge
-        addVertex(left, bottom);
-        addVertex(left + thickness, bottom);
-        addVertex(left + thickness, bottom + height);
-        addVertex(left, bottom);
-        addVertex(left + thickness, bottom + height);
-        addVertex(left, bottom + height);
+    //    // Left edge
+    //    addVertex(left, bottom);
+    //    addVertex(left + thickness, bottom);
+    //    addVertex(left + thickness, bottom + height);
+    //    addVertex(left, bottom);
+    //    addVertex(left + thickness, bottom + height);
+    //    addVertex(left, bottom + height);
 
-        // Right edge
-        addVertex(left + width - thickness, bottom);
-        addVertex(left + width, bottom);
-        addVertex(left + width, bottom + height);
-        addVertex(left + width - thickness, bottom);
-        addVertex(left + width, bottom + height);
-        addVertex(left + width - thickness, bottom + height);
-    }
+    //    // Right edge
+    //    addVertex(left + width - thickness, bottom);
+    //    addVertex(left + width, bottom);
+    //    addVertex(left + width, bottom + height);
+    //    addVertex(left + width - thickness, bottom);
+    //    addVertex(left + width, bottom + height);
+    //    addVertex(left + width - thickness, bottom + height);
+    //}
 
-    void drawButtonLabel(const UIButton& button, FONScontext* fontContext) {
-        fonsSetSize(fontContext, 18.0f);
-        fonsSetColor(fontContext, 0xFFFFFFFF); // white text
+    //void drawButtonLabel(const UIButton& button, FONScontext* fontContext) {
+    //    fonsSetSize(fontContext, 18.0f);
+    //    fonsSetColor(fontContext, 0xFFFFFFFF); // white text
 
-        float bounds[4];
-        fonsTextBounds(fontContext, 0, 0, button.label, nullptr, bounds);
-        float textWidth = bounds[2] - bounds[0];
-        float textHeight = bounds[3] - bounds[1];
+    //    float bounds[4];
+    //    fonsTextBounds(fontContext, 0, 0, button.label, nullptr, bounds);
+    //    float textWidth = bounds[2] - bounds[0];
+    //    float textHeight = bounds[3] - bounds[1];
 
-        float textX = button.x + (button.w - textWidth) * 0.5f;
-        float textY = button.y + (button.h + textHeight) * 0.5f;
+    //    float textX = button.x + (button.w - textWidth) * 0.5f;
+    //    float textY = button.y + (button.h + textHeight) * 0.5f;
 
-        fonsDrawText(fontContext, textX, textY, button.label, nullptr);
-    }
+    //    fonsDrawText(fontContext, textX, textY, button.label, nullptr);
+    //}
 
     //void drawButton(UIButton& button,
     //    std::vector<float>& vertices,
@@ -1161,7 +1164,7 @@ int main() try
             }
         }
 		// Store index count
-        GLsizei padIndexCount = static_cast<GLsizei>(padIndices.size());
+        // GLsizei padIndexCount = static_cast<GLsizei>(padIndices.size());
     }
 
 	// Task 1.4: Create landing pad VAO/VBO/EBO
@@ -1581,7 +1584,7 @@ int main() try
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Compute proj/view once
-        float aspect = fbwidth / fbheight;
+        // float aspect = fbwidth / fbheight;
         // Mat44f proj = make_perspective_projection(fovY, aspect, zNear, zFar);
 
 		// View matrix from camera
